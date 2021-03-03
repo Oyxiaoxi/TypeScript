@@ -101,8 +101,8 @@ interface Person {
   name: string;
   age: number;
 }
-// 接着定义了一个变量 viking，它的类型是 Person。这样，我们就约束了 viking 的形状必须和接口 Person 一致。
-let viking: Person ={
+// 接着定义了一个变量 person，它的类型是 Person。这样，我们就约束了 person 的形状必须和接口 Person 一致。
+let person: Person ={
   name: 'Person',
   age: 20
 }
@@ -124,7 +124,7 @@ interface Person {
   age?: number;
 }
   
-Person.id = 9527
+person.id = 9527
 ```
 
 ## 函数
