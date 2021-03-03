@@ -61,7 +61,7 @@ let n: null = null
 let num: number = undefined
 ```
 
-any 类型
+**any 类型**
 
 ```js
 let notSure: any = 4
@@ -159,9 +159,9 @@ const sum2: ISum = sum
 
 ## 类型推论，联合类型 & 类型断言
 
-[类型推论 - type inference](https://www.typescriptlang.org/docs/handbook/type-inference.html)
+**[类型推论 - type inference](https://www.typescriptlang.org/docs/handbook/type-inference.html)**
 
-[联合类型 - union types](https://www.typescriptlang.org/docs/handbook/unions-and-intersections.html#union-types)
+**[联合类型 - union types](https://www.typescriptlang.org/docs/handbook/unions-and-intersections.html#union-types)**
 
 ```js
 // 我们只需要用中竖线来分割两个
@@ -171,7 +171,7 @@ numberOrString.length
 numberOrString.toString()
 ```
 
-[类型断言 - type assertions](https://www.typescriptlang.org/docs/handbook/basic-types.html#type-assertions)
+**[类型断言 - type assertions](https://www.typescriptlang.org/docs/handbook/basic-types.html#type-assertions)**
 
 ```js
 // 这里我们可以用 as 关键字，告诉typescript 编译器，你没法判断我的代码，但是我本人很清楚，这里我就把它看作是一个 string，你可以给他用 string 的方法。
@@ -186,7 +186,7 @@ function getLength(input: string | number): number {
 }
 ```
 
-[类型守卫 - type guard](https://www.typescriptlang.org/docs/handbook/advanced-types.html#type-guards-and-differentiating-types)
+**[类型守卫 - type guard](https://www.typescriptlang.org/docs/handbook/advanced-types.html#type-guards-and-differentiating-types)**
 
 ```js
 // typescript 在不同的条件分支里面，智能的缩小了范围，这样我们代码出错的几率就大大的降低了。
@@ -207,7 +207,7 @@ function getLength2(input: string | number): number {
 - **继承 (Inheritance)** : 子类继承父类，子类除了拥有父类的所有特性外，还有一些更具体的特性。
 - **多态 (Polymorphism)** : 由继承面产生了相关的不同类，对同一方法可以有不同的响应。
 
-[类 - Class](https://www.typescriptlang.org/docs/handbook/classes.html)
+**[类 - Class](https://www.typescriptlang.org/docs/handbook/classes.html)**
 
 ```js
 class Animal {
@@ -246,9 +246,248 @@ const cell = new Cat('cell')
 console.log(cell.run())
 ```
 
-  [类成员的访问修饰符](https://www.typescriptlang.org/docs/handbook/classes.html#public-private-and-protected-modifiers)
+ **[类成员的访问修饰符](https://www.typescriptlang.org/docs/handbook/classes.html#public-private-and-protected-modifiers)**
 
 - **public** 修饰的属性或方法是公有的，可以在任何地方被访问到，默认所有的属性和方法都是 public 的
 - **private** 修饰的属性或方法是私有的，不能在声明它的类的外部访问
 - **protected** 修饰的属性或方法是受保护的，它和 private 类似，区别是它在子类中也是允许被访问的
+
+## 类与接口
+
+**[类实现一个接口](https://www.typescriptlang.org/docs/handbook/interfaces.html#class-types)**
+
+```js
+interface Radio {
+  switchRadio(trigger: boolean): void;
+}
+class Car implements Radio {
+  switchRadio(trigger) {
+    return 123
+  }
+}
+class Cellphone implements Radio {
+  switchRadio() {
+  }
+}
+
+interface Battery {
+  checkBatteryStatus(): void;
+}
+
+// 要实现多个接口，我们只需要中间用 逗号 隔开即可。
+class Cellphone implements Radio, Battery {
+  switchRadio() {
+  }
+  checkBatteryStatus() {
+
+  }
+}
+```
+
+## 枚举
+
+**[枚举 Enums](https://www.typescriptlang.org/docs/handbook/enums.html)**
+
+```js
+// 数字枚举，一个数字枚举可以用 enum 这个关键词来定义，我们定义一系列的方向，然后这里面的值，枚举成员会被赋值为从 0 开始递增的数字,
+enum Direction {
+  Up,
+  Down,
+  Left,
+  Right,
+}
+console.log(Direction.Up)
+
+// 还有一个神奇的点是这个枚举还做了反向映射
+console.log(Direction[0])
+
+// 字符串枚举
+enum Direction {
+  Up = 'UP',
+  Down = 'DOWN',
+  Left = 'LEFT',
+  Right = 'RIGHT',
+}
+const value = 'UP'
+if (value === Direction.Up) {
+  console.log('go up!')
+}
+```
+
+## 泛型 Generics
+
+**[泛型 Generics](https://www.typescriptlang.org/docs/handbook/generics.html)**
+
+> 泛型（Generics）是指在定义函数、接口或类的时候，不预先指定具体的类型，而在使用的时候再指定类型的一种特性。
+
+```js
+function echo(arg) {
+  return arg
+}
+const result = echo(123)
+// 这时候我们发现了一个问题，我们传入了数字，但是返回了 any
+
+function echo<T>(arg: T): T {
+  return arg
+}
+const result = echo(123)
+
+// 泛型也可以传入多个值
+function swap<T, U>(tuple: [T, U]): [U, T] {
+  return [tuple[1], tuple[0]]
+}
+
+const result = swap(['string', 123])
+```
+
+## 泛型约束
+
+在函数内部使用泛型变量时，由于事先不知道它是哪种类型，所以不能随意操作它的属性或方法
+
+```js
+function echoWithArr<T>(arg: T): T {
+  console.log(arg.length)
+  return arg
+}
+
+// 上例中，泛型 T 不一定包含属性 length，我们可以给他传入任意类型，当然有些不包括 length 属性，那样就会报错
+
+interface IWithLength {
+  length: number;
+}
+function echoWithLength<T extends IWithLength>(arg: T): T {
+  console.log(arg.length)
+  return arg
+}
+
+echoWithLength('str')
+const result3 = echoWithLength({length: 10})
+const result4 = echoWithLength([1, 2, 3])
+```
+
+## 泛型与类和接口
+
+```js
+class Queue {
+  private data = [];
+  push(item) {
+    return this.data.push(item)
+  }
+  pop() {
+    return this.data.shift()
+  }
+}
+
+const queue = new Queue()
+queue.push(1)
+queue.push('str')
+console.log(queue.pop().toFixed())
+console.log(queue.pop().toFixed())
+
+//在上述代码中存在一个问题，它允许你向队列中添加任何类型的数据，当然，当数据被弹出队列时，也可以是任意类型。在上面的示例中，看起来人们可以向队列中添加string 类型的数据，但是那么在使用的过程中，就会出现我们无法捕捉到的错误，
+
+class Queue<T> {
+  private data = [];
+  push(item: T) {
+    return this.data.push(item)
+  }
+  pop(): T {
+    return this.data.shift()
+  }
+}
+const queue = new Queue<number>()
+
+//泛型和 interface
+interface KeyPair<T, U> {
+  key: T;
+  value: U;
+}
+
+let kp1: KeyPair<number, string> = { key: 1, value: "str"}
+let kp2: KeyPair<string, number> = { key: "str", value: 123}
+```
+
+## 类型别外和交叉类型
+
+**[Utility Types](https://www.typescriptlang.org/docs/handbook/utility-types.html)**
+
+> 类型另外，给类型起一个别名，让它可以更方便的被重用。
+
+```js
+let sum: (x: number, y: number) => number
+const result = sum(1,2)
+type PlusType = (x: number, y: number) => number
+let sum2: PlusType
+
+// 支持联合类型
+type StrOrNumber = string | number
+let result2: StrOrNumber = '123'
+result2 = 123
+
+// 字符串字面量
+type Directions = 'Up' | 'Down' | 'Left' | 'Right'
+let toWhere: Directions = 'Up'
+```
+
+**[交叉类型 Intersection Types](https://www.typescriptlang.org/docs/handbook/unions-and-intersections.html#intersection-types)**
+
+```js
+interface IName  {
+  name: string
+}
+type IPerson = IName & { age: number }
+let person: IPerson = { name: 'hello', age: 12}
+```
+
+## 声明文件 
+
+**[声明文件](https://www.typescriptlang.org/docs/handbook/declaration-files/introduction.html)**
+
+**[@types 官方声明文件库](https://github.com/DefinitelyTyped/DefinitelyTyped/) **
+
+**[@types 搜索声明库](https://microsoft.github.io/TypeSearch/)**
+
+## 内置类型
+
+**[内置类型](https://github.com/Microsoft/TypeScript/tree/master/src/lib)**
+
+```js
+const a: Array<number> = [1,2,3]
+// 可以看到这个类型，不同的文件中有多处定义，但是它们都是 内部定义的一部分，然后根据不同的版本或者功能合并在了一起，一个interface 或者 类多次定义会合并在一起。这些文件一般都是以 lib 开头，以 d.ts 结尾，告诉大家，我是一个内置对象类型
+const date: Date = new Date()
+const reg = /abc/
+// 我们还可以使用一些 build in object，内置对象，比如 Math 与其他全局对象不同的是，Math 不是一个构造器。Math 的所有属性与方法都是静态的。
+
+Math.pow(2,2)
+
+// DOM 和 BOM 标准对象
+// document 对象，返回的是一个 HTMLElement
+let body: HTMLElement = document.body
+// document 上面的query 方法，返回的是一个 nodeList 类型
+let allLis = document.querySelectorAll('li')
+
+//当然添加事件也是很重要的一部分，document 上面有 addEventListener 方法，注意这个回调函数，因为类型推断，这里面的 e 事件对象也自动获得了类型，这里是个 mouseEvent 类型，因为点击是一个鼠标事件，现在我们可以方便的使用 e 上面的方法和属性。
+document.addEventListener('click', (e) => {
+  e.preventDefault()
+})
+```
+
+**[Utility Types](https://www.typescriptlang.org/docs/handbook/utility-types.html)**
+
+```js
+// partial，它可以把传入的类型都变成可选
+interface IPerson {
+  name: string
+  age: number
+}
+
+let viking: IPerson = { name: 'viking', age: 20 }
+type IPartial = Partial<IPerson>
+let viking2: IPartial = { }
+
+// Omit，它返回的类型可以忽略传入类型的某个属性
+
+type IOmit = Omit<IPerson, 'name'>
+let viking3: IOmit = { age: 20 }
+```
 
